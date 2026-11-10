@@ -1,0 +1,6 @@
+@AzureStorageFileLab.Api_HostAddress = http://localhost:5130
+
+GET {{AzureStorageFileLab.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
