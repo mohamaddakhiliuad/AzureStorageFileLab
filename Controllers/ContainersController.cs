@@ -16,9 +16,21 @@ namespace AzureStorageFileLab.Api.Controllers
     public class ContainersController : ControllerBase
     {
         private readonly BlobServiceClient _blobServiceClient;
-        public ContainersController(BlobServiceClient blobServiceClient)
+       ;
+        private readonly long _maxFileSizeBytes;
+
+        public ContainersController(BlobServiceClient blobServiceClient,IConfiguration configuration)
         {
             _blobServiceClient = blobServiceClient;
+          
+            _maxFileSizeBytes = configuration.GetValue<long>(
+    "FileUpload:MaxFileSizeBytes");
+
+            if (_maxFileSizeBytes <= 0)
+            {
+                throw new InvalidOperationException(
+                    "FileUpload:MaxFileSizeBytes must be greater than zero.");
+            }
         }
 
         [HttpPost]
@@ -48,6 +60,11 @@ namespace AzureStorageFileLab.Api.Controllers
         {
             if (file == null)
                 return BadRequest();
+            if (file.Length > _maxFileSizeBytes)
+            {
+                return StatusCode(StatusCodes.Status413PayloadTooLarge,
+                    new { message = "The file exceeds the configured upload size limit." });
+            }
             if (file.Length == 0 || string.IsNullOrWhiteSpace(file.FileName))
             {
                 return BadRequest();
