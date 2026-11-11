@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AzureStorageFileLab.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0db921926fc938c3481fa4a939acc4a237c4b276")]
 [assembly: System.Reflection.AssemblyProductAttribute("AzureStorageFileLab.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AzureStorageFileLab.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

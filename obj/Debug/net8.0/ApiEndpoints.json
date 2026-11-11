@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "createContainerRequest",
-        "Type": "AzureStorageFileLab.Api.Contracts.Containers.CreateContainerRequest",
+        "Type": "AzureStorageFileLab.Api.Contracts.Containers.ContainerRequest",
         "IsRequired": true
       }
     ],
@@ -44,14 +44,14 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "containerName",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
         "Name": "file",
         "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false
+      },
+      {
+        "Name": "containerName",
+        "Type": "",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -66,7 +66,7 @@
     "Parameters": [
       {
         "Name": "containerName",
-        "Type": "System.String",
+        "Type": "",
         "IsRequired": true
       }
     ],
@@ -91,27 +91,17 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "containerName",
+        "Name": "blobName",
         "Type": "System.String",
         "IsRequired": true
       },
       {
-        "Name": "blobName",
-        "Type": "System.String",
+        "Name": "containerName",
+        "Type": "",
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "Azure.Storage.Blobs.Models.BlobDownloadStreamingResult",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
     "ContainingType": "AzureStorageFileLab.Api.Controllers.WeatherForecastController",

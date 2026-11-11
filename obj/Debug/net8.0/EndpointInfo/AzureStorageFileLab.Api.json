@@ -14,17 +14,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateContainerRequest"
+                "$ref": "#/components/schemas/ContainerRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateContainerRequest"
+                "$ref": "#/components/schemas/ContainerRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateContainerRequest"
+                "$ref": "#/components/schemas/ContainerRequest"
               }
             }
           }
@@ -167,7 +167,7 @@
         ],
         "parameters": [
           {
-            "name": "containerName",
+            "name": "blobName",
             "in": "path",
             "required": true,
             "schema": {
@@ -175,7 +175,7 @@
             }
           },
           {
-            "name": "blobName",
+            "name": "containerName",
             "in": "path",
             "required": true,
             "schema": {
@@ -185,24 +185,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlobDownloadStreamingResult"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlobDownloadStreamingResult"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BlobDownloadStreamingResult"
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
@@ -249,276 +232,7 @@
   },
   "components": {
     "schemas": {
-      "BlobDownloadDetails": {
-        "type": "object",
-        "properties": {
-          "blobType": {
-            "$ref": "#/components/schemas/BlobType"
-          },
-          "contentLength": {
-            "type": "integer",
-            "format": "int64",
-            "readOnly": true
-          },
-          "contentType": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "contentHash": {
-            "type": "string",
-            "format": "byte",
-            "nullable": true,
-            "readOnly": true
-          },
-          "contentCrc": {
-            "type": "string",
-            "format": "byte",
-            "nullable": true,
-            "readOnly": true
-          },
-          "lastModified": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "metadata": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "nullable": true,
-            "readOnly": true
-          },
-          "contentRange": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "eTag": {
-            "$ref": "#/components/schemas/ETag"
-          },
-          "contentEncoding": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "cacheControl": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "contentDisposition": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "contentLanguage": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "blobSequenceNumber": {
-            "type": "integer",
-            "format": "int64",
-            "readOnly": true
-          },
-          "copyCompletedOn": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "copyStatusDescription": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "copyId": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "copyProgress": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "copySource": {
-            "type": "string",
-            "format": "uri",
-            "nullable": true,
-            "readOnly": true
-          },
-          "copyStatus": {
-            "$ref": "#/components/schemas/CopyStatus"
-          },
-          "leaseDuration": {
-            "$ref": "#/components/schemas/LeaseDurationType"
-          },
-          "leaseState": {
-            "$ref": "#/components/schemas/LeaseState"
-          },
-          "leaseStatus": {
-            "$ref": "#/components/schemas/LeaseStatus"
-          },
-          "acceptRanges": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "blobCommittedBlockCount": {
-            "type": "integer",
-            "format": "int32",
-            "readOnly": true
-          },
-          "isServerEncrypted": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "encryptionKeySha256": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "encryptionScope": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "blobContentHash": {
-            "type": "string",
-            "format": "byte",
-            "nullable": true,
-            "readOnly": true
-          },
-          "tagCount": {
-            "type": "integer",
-            "format": "int64",
-            "readOnly": true
-          },
-          "versionId": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "isSealed": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "objectReplicationSourceProperties": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ObjectReplicationPolicy"
-            },
-            "nullable": true,
-            "readOnly": true
-          },
-          "objectReplicationDestinationPolicyId": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "lastAccessed": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "immutabilityPolicy": {
-            "$ref": "#/components/schemas/BlobImmutabilityPolicy"
-          },
-          "hasLegalHold": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "createdOn": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "accessTier": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "accessTierInferred": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "accessTierChangedOn": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "smartAccessTier": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "BlobDownloadStreamingResult": {
-        "type": "object",
-        "properties": {
-          "details": {
-            "$ref": "#/components/schemas/BlobDownloadDetails"
-          },
-          "content": {
-            "type": "string",
-            "format": "binary",
-            "nullable": true,
-            "readOnly": true
-          },
-          "expectTrailingDetails": {
-            "type": "boolean",
-            "readOnly": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "BlobImmutabilityPolicy": {
-        "type": "object",
-        "properties": {
-          "expiresOn": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "policyMode": {
-            "$ref": "#/components/schemas/BlobImmutabilityPolicyMode"
-          }
-        },
-        "additionalProperties": false
-      },
-      "BlobImmutabilityPolicyMode": {
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
-      "BlobType": {
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
-      "CopyStatus": {
-        "enum": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
-      "CreateContainerRequest": {
+      "ContainerRequest": {
         "type": "object",
         "properties": {
           "name": {
@@ -526,10 +240,6 @@
             "nullable": true
           }
         },
-        "additionalProperties": false
-      },
-      "ETag": {
-        "type": "object",
         "additionalProperties": false
       },
       "GetFileResult": {
@@ -546,74 +256,6 @@
           }
         },
         "additionalProperties": false
-      },
-      "LeaseDurationType": {
-        "enum": [
-          0,
-          1
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
-      "LeaseState": {
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
-      "LeaseStatus": {
-        "enum": [
-          0,
-          1
-        ],
-        "type": "integer",
-        "format": "int32"
-      },
-      "ObjectReplicationPolicy": {
-        "type": "object",
-        "properties": {
-          "policyId": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "rules": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ObjectReplicationRule"
-            },
-            "nullable": true,
-            "readOnly": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ObjectReplicationRule": {
-        "type": "object",
-        "properties": {
-          "ruleId": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
-          "replicationStatus": {
-            "$ref": "#/components/schemas/ObjectReplicationStatus"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ObjectReplicationStatus": {
-        "enum": [
-          0,
-          1
-        ],
-        "type": "integer",
-        "format": "int32"
       },
       "WeatherForecast": {
         "type": "object",

@@ -60,3 +60,4 @@ C:\Users\moham\source\AzureStorageFileLab.Api\AzureStorageFileLab.Api\bin\Debug\
 C:\Users\moham\source\AzureStorageFileLab.Api\AzureStorageFileLab.Api\bin\Debug\net8.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\moham\source\AzureStorageFileLab.Api\AzureStorageFileLab.Api\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 C:\Users\moham\source\AzureStorageFileLab.Api\AzureStorageFileLab.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\moham\source\AzureStorageFileLab.Api\AzureStorageFileLab.Api\obj\Debug\net8.0\AzureStorageFileLab.Api.sourcelink.json

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using Azure;
 using Azure.Storage.Blobs;
@@ -21,7 +22,7 @@ namespace AzureStorageFileLab.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateContainerRequest createContainerRequest)
+        public async Task<IActionResult> Create(ContainerRequest createContainerRequest)
         {
 
             await _blobServiceClient.GetBlobContainerClient(createContainerRequest.Name).CreateIfNotExistsAsync();
@@ -39,11 +40,14 @@ namespace AzureStorageFileLab.Api.Controllers
         }
 
         [HttpPost("{containerName}/blobs")]
-        public async Task<IActionResult> UploadBlobAsync([FromRoute] string containerName, IFormFile? file, CancellationToken ct)
+        public async Task<IActionResult> UploadBlobAsync([FromRoute]
+        
+
+        ContainerRequest containerRequest, IFormFile? file, CancellationToken ct)
 
         {
             if (file == null)
-                throw new ArgumentNullException(nameof(file));
+                return BadRequest();
             if (file.Length == 0 || string.IsNullOrWhiteSpace(file.FileName))
             {
                 return BadRequest();
@@ -52,7 +56,7 @@ namespace AzureStorageFileLab.Api.Controllers
             {
                 var fileExtention = Path.GetExtension(file.FileName);
                 var uniqueBlobName = $"{Guid.NewGuid()}{fileExtention}";
-                var container = _blobServiceClient.GetBlobContainerClient(containerName);
+                var container = _blobServiceClient.GetBlobContainerClient(containerRequest.Name);
 
                 var blobClient = container.GetBlobClient(uniqueBlobName);
                 using var stream = file.OpenReadStream();
@@ -70,18 +74,18 @@ namespace AzureStorageFileLab.Api.Controllers
             catch (RequestFailedException ex) when (ex.Status == 404) // یا بررسی ارور ContainerNotFound
             {
 
-                return NotFound(new { message = $"Container not found '{containerName}' " });
+                return NotFound(new { message = $"Container not found '{containerRequest.Name}' " });
             }
 
 
 
         }
         [HttpGet("{containerName}/blobs")]
-        public async Task<ActionResult<List<GetFileResult>>> GetBlobDetailsAsync([FromRoute] string containerName)
+        public async Task<ActionResult<List<GetFileResult>>> GetBlobDetailsAsync([FromRoute] ContainerRequest containerRequest)
         {
             try
             {
-                var bsc = _blobServiceClient.GetBlobContainerClient(containerName);
+                var bsc = _blobServiceClient.GetBlobContainerClient(containerRequest.Name);
                 List<GetFileResult> fileList = new List<GetFileResult>();
                 await foreach (var blobItem in bsc.GetBlobsAsync())
                 {
@@ -94,7 +98,7 @@ namespace AzureStorageFileLab.Api.Controllers
             catch (RequestFailedException ex) when (ex.Status == 404 && ex.ErrorCode == "ContainerNotFound")
             {
 
-                return NotFound(new { message = $"Container not found '{containerName}' " });
+                return NotFound(new { message = $"Container not found '{containerRequest.Name}' " });
             }
 
 
@@ -102,20 +106,15 @@ namespace AzureStorageFileLab.Api.Controllers
 
 
         [HttpGet("{containerName}/blobs/{blobName}")]
-        public async Task<ActionResult<BlobDownloadStreamingResult>> DownloadAsync([FromRoute] string containerName, [FromRoute] string blobName, CancellationToken ct)
+        public async Task<IActionResult> DownloadAsync([FromRoute] ContainerRequest containerRequest, [FromRoute] string blobName, CancellationToken ct)
         {
-            if (string.IsNullOrWhiteSpace(containerName))
-            {
-                throw new BadHttpRequestException(nameof(containerName));
-            }
-            if (string.IsNullOrWhiteSpace(blobName))
-            {
-                throw new BadHttpRequestException(nameof(blobName));
-            }
+            if (string.IsNullOrWhiteSpace(containerRequest.Name) || string.IsNullOrWhiteSpace(blobName))
+                return BadRequest(new { message = "Container name and blob name are required." });
+             
             try
             {
 
-                var bsc = _blobServiceClient.GetBlobContainerClient(containerName); ;
+                var bsc = _blobServiceClient.GetBlobContainerClient(containerRequest.Name); ;
                 var response = await bsc.GetBlobClient(blobName).DownloadStreamingAsync(cancellationToken: ct);
                 return File(
      response.Value.Content,
@@ -124,7 +123,8 @@ namespace AzureStorageFileLab.Api.Controllers
             }
             catch (RequestFailedException ex) when (ex.Status == 404 && (ex.ErrorCode == "ContainerNotFound" || ex.ErrorCode == "BlobNotFound"))
             {
-                return NotFound(new { message = $"not found '{containerName} or {blobName}'" });
+                
+                return NotFound(new { message = "Blob '{blobName}' was not found in container '{containerName}'." });
             }
         }
     }

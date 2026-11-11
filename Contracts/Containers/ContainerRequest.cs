@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AzureStorageFileLab.Api.Contracts.Containers;
 
-public record CreateContainerRequest(
+public record ContainerRequest(
     [Required(ErrorMessage = "Container name is required.")]
     [StringLength(63, MinimumLength = 3,
         ErrorMessage = "Container name must be between 3 and 63 characters.")]
