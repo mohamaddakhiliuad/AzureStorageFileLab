@@ -1,4 +1,5 @@
 using System.Data.Common;
+using Azure.Identity;
 using Azure.Storage.Blobs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,14 +10,25 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddSingleton<BlobServiceClient>(sp =>
 {
     var config = sp.GetRequiredService<IConfiguration>();
-    var conn = config["ConnectionStrings:AzureStorage"] ??
-    throw new InvalidOperationException("the connection string is not valid");
-   return new BlobServiceClient(conn);
-});
+    var blobServiceUri = config["AzureStorage:BlobServiceUri"];
 
+    if (!string.IsNullOrWhiteSpace(blobServiceUri))
+    {
+        return new BlobServiceClient(
+            new Uri(blobServiceUri),
+            new ManagedIdentityCredential(ManagedIdentityId.SystemAssigned));
+    }
+
+    var connectionString = config.GetConnectionString("AzureStorage")
+        ?? throw new InvalidOperationException(
+            "ConnectionStrings:AzureStorage is missing.");
+
+    return new BlobServiceClient(connectionString);
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
